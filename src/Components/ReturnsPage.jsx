@@ -8,7 +8,7 @@ function ReturnsPage() {
 
   const fetchOrder = () => {
     axios
-      .get(`http://localhost:1337/api/orders?filters[orderId][$eq]=${orderId}&populate=*`)
+      .get(`https://strapi-backend-cashier.up.railway.app/api/orders?filters[orderId][$eq]=${orderId}&populate=*`)
       .then((res) => {
         const found = res.data.data[0];
         if (found) {
@@ -46,14 +46,14 @@ const updatedItems = orderData.items.map((item) => {
         const item = orderData.items.find((i) => i.barcode === barcode);
         if (!item || qty === 0) return;
 
-        const res = await axios.get(`http://localhost:1337/api/products/${item.documentId}`);
+        const res = await axios.get(`https://strapi-backend-cashier.up.railway.app/api/products/${item.documentId}`);
         const currentStock = res.data.data.inStock || 0;
         const currentReturned = res.data.data.returnedCount || 0;
 
         const newStock = currentStock + qty;
         const newReturned = currentReturned + qty;
 
-        return axios.put(`http://localhost:1337/api/products/${item.documentId}`, {
+        return axios.put(`https://strapi-backend-cashier.up.railway.app/api/products/${item.documentId}`, {
           data: {
             inStock: newStock,
             returnedCount: newReturned,
@@ -68,7 +68,7 @@ const updatedItems = orderData.items.map((item) => {
         0
       );
 
-      await axios.put(`http://localhost:1337/api/orders/${orderData.documentId}`, {
+      await axios.put(`https://strapi-backend-cashier.up.railway.app/api/orders/${orderData.documentId}`, {
         data: {
           items: updatedItems,
           total: updatedTotal,

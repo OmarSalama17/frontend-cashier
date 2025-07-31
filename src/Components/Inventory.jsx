@@ -5,7 +5,7 @@ function InventoryPage() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:1337/api/products?populate=*")
+    axios.get("https://strapi-backend-cashier.up.railway.app/api/products?populate=*")
       .then(res => {
         const mapped = res.data.data.map(p => ({
           id: p.id,

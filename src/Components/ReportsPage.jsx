@@ -11,7 +11,7 @@ function ReportsPage() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:1337/api/orders?populate=*")
+      .get("https://strapi-backend-cashier.up.railway.app/api/orders?populate=*")
       .then((res) => {
         setOrders(res.data.data);
       })

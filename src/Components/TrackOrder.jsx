@@ -33,7 +33,7 @@ const TrackOrder = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:1337/api/orders?filters[orderId][$eq]=${orderId}&populate=*`
+        `https://strapi-backend-cashier.up.railway.app/api/orders?filters[orderId][$eq]=${orderId}&populate=*`
       );
       const data = await res.json();
 

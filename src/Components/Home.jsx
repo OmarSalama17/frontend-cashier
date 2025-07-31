@@ -17,7 +17,7 @@ const [paymentMethod, setPaymentMethod] = useState("cash");
 
 // fetch
   useEffect(() => {
-    axios.get("http://localhost:1337/api/products?populate=*")
+    axios.get("https://strapi-backend-cashier.up.railway.app/api/products?populate=*")
       .then(response => {
         const mappedProducts = response.data.data.map(item => ({
           id: item.id,
@@ -121,13 +121,13 @@ const addToCart = (product) => {
       }
     };
 
-    axios.post("http://localhost:1337/api/orders", orderData, {
+    axios.post("https://strapi-backend-cashier.up.railway.app/api/orders", orderData, {
       headers: { "Content-Type": "application/json" }
     })
       .then(() => {
 const updateStockRequests = cart.map(async (item) => {
   try {
-    const res = await axios.get(`http://localhost:1337/api/products/${item.documentId}`);
+    const res = await axios.get(`https://strapi-backend-cashier.up.railway.app/api/products/${item.documentId}`);
     const currentStock = res.data.data.inStock;
     const currentSold = res.data.data.soldCount || 0;
 
@@ -139,7 +139,7 @@ const updateStockRequests = cart.map(async (item) => {
     const newStock = currentStock - item.quantity;
     const newSold = currentSold + item.quantity;
 
-    return axios.put(`http://localhost:1337/api/products/${item.documentId}`, {
+    return axios.put(`https://strapi-backend-cashier.up.railway.app/api/products/${item.documentId}`, {
       data: {
         inStock: newStock,
         soldCount: newSold,
