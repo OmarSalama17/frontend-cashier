@@ -171,7 +171,7 @@ Promise.all(updateStockRequests)
   setLastOrder(newOrder); 
   setCart([]);
 
-  alert(`✅ تم تسجيل الطلب!\nرقم الطلب: ${orderId}\nالإجمالي بعد الخصم: ${totalAfterDiscount.toFixed(2)} جنيه`);
+  alert(` تم تسجيل الطلب!\nرقم الطلب: ${orderId}\nالإجمالي بعد الخصم: ${totalAfterDiscount.toFixed(2)} جنيه`);
   printReceipt(); 
 
 })

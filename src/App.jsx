@@ -30,8 +30,6 @@ function App() {
         <Route path="/returns" element={<ReturnsPage />} />
         <Route path="/dash" element={<AdminPanel />} />
         <Route path="/track-order" element={<TrackOrder />} />
-
-        {/* زود راوتات تانية هنا لو عندك */}
       </Routes>
     </Router>
 
