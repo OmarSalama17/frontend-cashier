@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>تتبع الطلب</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+      direction: rtl;
+      background-color: #f9f9f9;
+    }
+    input {
+      padding: 10px;
+      width: 100%;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .btn {
+      background: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .item {
+      margin-bottom: 10px;
+      background: #fff;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .total {
+      margin-top: 20px;
+      font-weight: bold;
+      background: #e1ffe1;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .box {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 تتبع طلبك</h1>
+  <input type="number" id="orderIdInput" placeholder="ادخل رقم الطلب..." />
+  <button class="btn" onclick="searchOrder()">بحث</button>
+
+  <div id="orderResult" class="box"></div>
+
+  <script>
+    const formatDateTime = (isoString) => {
+      const date = new Date(isoString);
+      const datePart = date.toLocaleDateString("ar-EG", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric"
+      });
+      const timePart = date.toLocaleTimeString("ar-EG", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+      });
+      return `📅 ${datePart} ⏰ ${timePart}`;
+    };
+
+    async function searchOrder() {
+      const orderId = document.getElementById("orderIdInput").value.trim();
+      const resultBox = document.getElementById("orderResult");
+
+      if (!orderId) {
+        alert("من فضلك أدخل رقم الطلب");
+        return;
+      }
+
+      resultBox.innerHTML = "⏳ جاري البحث ...";
+
+      try {
+        const res = await fetch(`http://localhost:1337/api/orders?filters[orderId][$eq]=${orderId}&populate=*`);
+        const data = await res.json();
+
+        if (!data.data || data.data.length === 0) {
+          resultBox.innerHTML = "<p>❌ لم يتم العثور على الطلب.</p>";
+          return;
+        }
+
+        const order = data.data[0];
+        const items = order.items || [];
+
+        let html = `
+        
+          <p><strong>رقم الطلب:</strong> ${order.orderId}</p>
+          <p><strong>التاريخ:</strong> ${formatDateTime(order.date)}</p>
+          ${order.discount ? `<p><strong>نسبة الخصم:</strong> ${order.discount * 100}%</p>` : ""}
+          <hr style="margin: 10px 0;" />
+        `;
+
+        let total = 0;
+        items.forEach(item => {
+          const price = item.price * item.quantity;
+        total += price;
+        html += `<div class="item">${item.name} - ${item.price} × ${item.quantity} = ${price} جنيه</div>`;
+        html += `<p><strong>اسم العميل:</strong> ${order.customerName || "غير معروف"}</p>`;
+        html += `<p><strong>رقم التليفون:</strong> ${order.customerPhone || "غير معروف"}</p>`;
+        });
+
+        html += `<div class="total">الإجمالي بعد الخصم: ${order.total.toFixed(2)} جنيه</div>`;
+        resultBox.innerHTML = html;
+
+      } catch (error) {
+        console.error("❌ حدث خطأ أثناء جلب البيانات:", error);
+        resultBox.innerHTML = "<p>⚠️ حدث خطأ أثناء جلب الطلب، حاول مرة أخرى لاحقًا.</p>";
+      }
+    }
+  </script>
+</body>
+</html>
